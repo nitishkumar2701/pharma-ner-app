@@ -70,32 +70,8 @@ variable in `.env` — no other code needs to change:
 
 | `LLM_PROVIDER` | Cost | Get a key |
 |---|---|---|
-| `anthropic` (default) | Paid | https://console.anthropic.com/settings/keys |
-| `groq` | Free tier, generous limits, fast | https://console.groq.com/keys |
 | `gemini` | Free tier | https://aistudio.google.com/apikey |
-| `ollama` | Fully free, runs locally, no key | https://ollama.com |
 
-Example `.env` for the free Groq option:
-
-```
-LLM_PROVIDER=groq
-GROQ_API_KEY=gsk_your-real-key-here
-GROQ_MODEL=llama-3.3-70b-versatile
-```
-
-For fully offline/local use with Ollama (no API key, no internet needed
-once the model is downloaded):
-
-```bash
-# install Ollama from https://ollama.com, then:
-ollama pull llama3.1
-ollama serve   # usually starts automatically after install
-```
-
-```
-LLM_PROVIDER=ollama
-OLLAMA_MODEL=llama3.1
-```
 
 Open-weight models (Llama via Groq/Ollama) are generally a bit less
 consistent at strict JSON formatting than Claude — `llm_service.py` already

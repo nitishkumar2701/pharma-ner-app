@@ -59,13 +59,8 @@ class LLMService:
     """
     Talks to whichever LLM provider is configured via LLM_PROVIDER:
 
-      - "anthropic" (default) -> Claude, via the Anthropic API. Paid.
-      - "groq"                -> Llama models via Groq's free tier.
-                                  https://console.groq.com
       - "gemini"               -> Google Gemini free tier.
                                   https://aistudio.google.com
-      - "ollama"                -> A fully local, fully free model via Ollama.
-                                  https://ollama.com (no API key needed)
 
     Set LLM_PROVIDER plus the matching API key env var in .env. Everything
     downstream (app.py, the frontend) is unaffected by which provider is used.
@@ -73,41 +68,19 @@ class LLMService:
 
     def __init__(self):
         self.provider = os.environ.get("LLM_PROVIDER", "gemini").lower()
-
-        self.anthropic_key = os.environ.get("ANTHROPIC_API_KEY")
-        self.anthropic_model = os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-5")
-
-        self.groq_key = os.environ.get("GROQ_API_KEY")
-        self.groq_model = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
-
         self.gemini_key = os.environ.get("GEMINI_API_KEY")
         self.gemini_model = os.environ.get("GEMINI_MODEL", "gemini-3.6-flash")
 
-        self.ollama_url = os.environ.get("OLLAMA_URL", "http://localhost:11434")
-        self.ollama_model = os.environ.get("OLLAMA_MODEL", "llama3.1")
-
     def is_configured(self):
-        if self.provider == "anthropic":
-            return bool(self.anthropic_key)
-        if self.provider == "groq":
-            return bool(self.groq_key)
         if self.provider == "gemini":
             return bool(self.gemini_key)
-        if self.provider == "ollama":
-            return True  # no key needed, assumed reachable locally
         return False
 
     def describe(self, term, hint_label=None):
         prompt = _build_user_prompt(term, hint_label)
 
-        if self.provider == "anthropic":
-            raw = self._call_anthropic(prompt)
-        elif self.provider == "groq":
-            raw = self._call_groq(prompt)
-        elif self.provider == "gemini":
+        if self.provider == "gemini":
             raw = self._call_gemini(prompt)
-        elif self.provider == "ollama":
-            raw = self._call_ollama(prompt)
         else:
             raise RuntimeError(f"Unknown LLM_PROVIDER '{self.provider}'.")
 
@@ -124,46 +97,6 @@ class LLMService:
             }
 
     # ---------- providers ----------
-
-    # def _call_anthropic(self, prompt):
-    #     if not self.anthropic_key:
-    #         raise RuntimeError(
-    #             "ANTHROPIC_API_KEY is not set. Add it to .env, or switch "
-    #             "LLM_PROVIDER to 'groq', 'gemini', or 'ollama' for a free option."
-    #         )
-    #     from anthropic import Anthropic
-
-    #     client = Anthropic(api_key=self.anthropic_key)
-    #     message = client.messages.create(
-    #         model=self.anthropic_model,
-    #         max_tokens=500,
-    #         system=SYSTEM_PROMPT,
-    #         messages=[{"role": "user", "content": prompt}],
-    #     )
-    #     return "".join(b.text for b in message.content if b.type == "text")
-
-    def _call_groq(self, prompt):
-        if not self.groq_key:
-            raise RuntimeError(
-                "GROQ_API_KEY is not set. Get a free key at "
-                "https://console.groq.com/keys and add it to .env."
-            )
-        resp = requests.post(
-            "https://api.groq.com/openai/v1/chat/completions",
-            headers={"Authorization": f"Bearer {self.groq_key}"},
-            json={
-                "model": self.groq_model,
-                "messages": [
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": prompt},
-                ],
-                "temperature": 0.2,
-                "max_tokens": 500,
-            },
-            timeout=30,
-        )
-        resp.raise_for_status()
-        return resp.json()["choices"][0]["message"]["content"]
 
     def _call_gemini(self, prompt):
         if not self.gemini_key:
@@ -213,27 +146,3 @@ class LLMService:
             "This is common on the free tier during peak times — please try again "
             "in a moment."
         ) from last_error
-
-    def _call_ollama(self, prompt):
-        try:
-            resp = requests.post(
-                f"{self.ollama_url}/api/chat",
-                json={
-                    "model": self.ollama_model,
-                    "messages": [
-                        {"role": "system", "content": SYSTEM_PROMPT},
-                        {"role": "user", "content": prompt},
-                    ],
-                    "stream": False,
-                    "options": {"temperature": 0.2},
-                },
-                timeout=60,
-            )
-            resp.raise_for_status()
-        except requests.exceptions.ConnectionError as exc:
-            raise RuntimeError(
-                "Could not reach Ollama at "
-                f"{self.ollama_url}. Install it from https://ollama.com, run "
-                f"'ollama pull {self.ollama_model}', and make sure it's running."
-            ) from exc
-        return resp.json()["message"]["content"]

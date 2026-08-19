@@ -173,7 +173,7 @@ class LLMService:
             )
         url = (
             f"https://generativelanguage.googleapis.com/v1beta/models/"
-            f"{self.gemini_model}:generateContent?key=geminikey"
+            f"{self.gemini_model}:generateContent?key={self.gemini_key}"
         )
         payload = {
             "system_instruction": {"parts": [{"text": SYSTEM_PROMPT}]},

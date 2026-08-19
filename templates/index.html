@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Specimen &mdash; Drug &amp; Disease Lookup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <div class="mark">
+          <span class="mark-glyph">Rx</span>
+          <span class="mark-text">Specimen</span>
+        </div>
+        <div class="topbar-meta">
+          <span class="dot"></span>
+          {{ term_count }} reference terms indexed
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <p class="eyebrow">Chemical &amp; Disease Reference</p>
+          <h1>
+            Enter a name.<br />Learn what it is<span class="accent-dot">.</span>
+          </h1>
+          <p class="lede">
+            Search any drug or condition. Specimen cross-references a biomedical
+            entity index built from PubTator-annotated literature, then asks AI
+            to write a short, plain-language note.
+          </p>
+
+          <form id="search-form" class="search-form" autocomplete="off">
+            <label for="search-input" class="sr-only"
+              >Drug or disease name</label
+            >
+            <input
+              id="search-input"
+              type="text"
+              placeholder="clonidine, lidocaine, hypertension&hellip;"
+              required
+            />
+            <button type="submit">
+              <span>Identify</span>
+            </button>
+          </form>
+
+          <div class="chip-row" id="example-chips">
+            <button type="button" class="chip" data-term="clonidine">
+              clonidine
+            </button>
+            <button type="button" class="chip" data-term="lidocaine">
+              lidocaine
+            </button>
+            <button type="button" class="chip" data-term="hypertension">
+              hypertension
+            </button>
+            <button type="button" class="chip" data-term="depression">
+              depression
+            </button>
+          </div>
+        </section>
+
+        <section id="result-zone" class="result-zone" hidden>
+          <!-- populated by JS -->
+        </section>
+
+        <section id="error-zone" class="error-zone" hidden></section>
+
+        <section class="analyzer">
+          <div class="analyzer-head">
+            <p class="eyebrow">Passage Scan</p>
+            <h2>Screen a paragraph instead</h2>
+            <p class="lede small">
+              Paste clinical or research text to highlight every known chemical
+              and disease mention using the reference index.
+            </p>
+          </div>
+
+          <form id="analyze-form">
+            <textarea
+              id="analyze-input"
+              rows="6"
+              placeholder="Paste a sentence or abstract here&hellip;"
+            ></textarea>
+            <button type="submit">Scan text</button>
+          </form>
+
+          <div id="analyze-output" class="specimen-card analyze-output" hidden>
+            <div class="specimen-tab">scan result</div>
+            <p id="analyze-html" class="analyze-html"></p>
+            <div id="analyze-legend" class="legend"></div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <p>
+          Built on a BC5CDR-style PubTator entity index &middot; notes generated
+          by an AI model &middot; not a substitute for professional medical
+          advice.
+        </p>
+      </footer>
+    </div>
+
+    <template id="result-template">
+      <div class="specimen-card">
+        <div class="specimen-tab" data-tab></div>
+        <div class="specimen-top">
+          <h3 data-name></h3>
+          <span class="badge" data-badge></span>
+        </div>
+        <div class="specimen-body" data-body></div>
+        <div class="specimen-meta" data-meta></div>
+      </div>
+    </template>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
+</html>

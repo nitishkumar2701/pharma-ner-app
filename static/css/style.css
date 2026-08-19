@@ -1,0 +1,418 @@
+:root {
+  --bg: #142420;
+  --bg-alt: #0f1d19;
+  --panel: #faf6ec;
+  --panel-line: #d8cfb8;
+  --ink: #1c2a20;
+  --ink-soft: #5b6b5f;
+  --gold: #cf9d4e;
+  --gold-soft: #e7c98a;
+  --drug: #bf6a34;
+  --drug-bg: #f3e2d0;
+  --disease: #4c5f9e;
+  --disease-bg: #e0e4f3;
+  --unknown: #6b6459;
+  --unknown-bg: #eae6da;
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at 15% 0%, #1c3129 0%, var(--bg) 45%, var(--bg-alt) 100%);
+  color: var(--panel);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.shell {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* ---------- top bar ---------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 32px;
+  border-bottom: 1px solid rgba(231, 201, 138, 0.18);
+}
+
+.mark {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.mark-glyph {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 22px;
+  color: var(--gold-soft);
+  border: 1.5px solid var(--gold-soft);
+  border-radius: 4px;
+  padding: 1px 8px;
+  letter-spacing: 0.02em;
+}
+
+.mark-text {
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 0.01em;
+}
+
+.topbar-meta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: rgba(250, 246, 236, 0.55);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #7fd99a;
+  box-shadow: 0 0 6px #7fd99a;
+  display: inline-block;
+}
+
+/* ---------- hero ---------- */
+
+.hero { padding: 56px 0 20px; }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 11px;
+  color: var(--gold-soft);
+  margin: 0 0 14px;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(34px, 6vw, 52px);
+  line-height: 1.08;
+  margin: 0 0 20px;
+  color: var(--panel);
+}
+
+.accent-dot { color: var(--gold); }
+
+.lede {
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(250, 246, 236, 0.72);
+  max-width: 52ch;
+  margin: 0 0 32px;
+}
+
+.lede.small { font-size: 14px; max-width: 58ch; }
+
+.search-form {
+  display: flex;
+  gap: 10px;
+  background: var(--panel);
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 18px 40px -18px rgba(0,0,0,0.6);
+}
+
+.search-form input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--ink);
+  padding: 12px 14px;
+  outline: none;
+}
+
+.search-form input::placeholder { color: var(--ink-soft); }
+
+.search-form button {
+  border: none;
+  background: var(--ink);
+  color: var(--panel);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 12px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.search-form button:hover { background: #2c4033; }
+.search-form button:active { transform: scale(0.98); }
+.search-form button:disabled { opacity: 0.6; cursor: progress; }
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.chip {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: rgba(250, 246, 236, 0.75);
+  background: rgba(231, 201, 138, 0.08);
+  border: 1px solid rgba(231, 201, 138, 0.25);
+  border-radius: 999px;
+  padding: 6px 13px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.chip:hover {
+  border-color: var(--gold-soft);
+  color: var(--gold-soft);
+}
+
+/* ---------- specimen card ---------- */
+
+.result-zone { margin: 36px 0; }
+
+.specimen-card {
+  position: relative;
+  background: var(--panel);
+  color: var(--ink);
+  border-radius: 4px;
+  padding: 28px 26px 22px;
+  box-shadow: 0 24px 48px -20px rgba(0,0,0,0.55);
+  animation: rise 0.35s ease;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.specimen-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 20px; right: 20px;
+  height: 0;
+  border-top: 2px dashed var(--panel-line);
+}
+
+.specimen-tab {
+  position: absolute;
+  top: -11px;
+  left: 26px;
+  background: var(--ink);
+  color: var(--gold-soft);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 3px;
+}
+
+.specimen-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 10px 0 18px;
+}
+
+.specimen-top h3 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 5px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.badge.drug { background: var(--drug-bg); color: var(--drug); }
+.badge.disease { background: var(--disease-bg); color: var(--disease); }
+.badge.unknown { background: var(--unknown-bg); color: var(--unknown); }
+
+.specimen-body { display: grid; gap: 14px; }
+
+.field-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  margin: 0 0 4px;
+}
+
+.field-value {
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.specimen-meta {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--panel-line);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.disclaimer {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+/* ---------- error ---------- */
+
+.error-zone {
+  margin: 24px 0;
+  padding: 14px 18px;
+  border-radius: 6px;
+  background: rgba(191, 106, 52, 0.15);
+  border: 1px solid rgba(191, 106, 52, 0.4);
+  color: #f3d9c3;
+  font-size: 14px;
+}
+
+/* ---------- analyzer ---------- */
+
+.analyzer {
+  margin-top: 64px;
+  padding-top: 40px;
+  border-top: 1px solid rgba(231, 201, 138, 0.18);
+}
+
+.analyzer-head h2 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 500;
+  margin: 0 0 10px;
+}
+
+#analyze-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+#analyze-input {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  background: var(--panel);
+  color: var(--ink);
+  border: none;
+  border-radius: 8px;
+  padding: 14px 16px;
+  resize: vertical;
+}
+
+#analyze-form button {
+  align-self: flex-start;
+  border: 1px solid var(--gold-soft);
+  background: transparent;
+  color: var(--gold-soft);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+#analyze-form button:hover { background: rgba(231, 201, 138, 0.1); }
+
+.analyze-output { margin-top: 22px; }
+
+.analyze-html {
+  font-size: 15px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+}
+
+.analyze-html mark {
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.analyze-html mark.chemical { background: var(--drug-bg); color: var(--drug); }
+.analyze-html mark.disease { background: var(--disease-bg); color: var(--disease); }
+
+.legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+.legend i {
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.legend i.chemical { background: var(--drug); }
+.legend i.disease { background: var(--disease); }
+
+/* ---------- footer ---------- */
+
+footer {
+  margin-top: 64px;
+  font-size: 12px;
+  color: rgba(250, 246, 236, 0.4);
+  text-align: center;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 520px) {
+  .search-form { flex-direction: column; }
+  .search-form button { width: 100%; }
+  .specimen-top { flex-direction: column; align-items: flex-start; }
+}
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .specimen-card { animation: none; }
+}

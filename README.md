@@ -1,4 +1,4 @@
-# Specimen — Drug & Disease Lookup
+# RX Specimen
 
 A rebuild of the original spaCy/PubTator NER Flask app into a modern lookup
 tool: search any drug or disease name, get an instant Chemical/Disease

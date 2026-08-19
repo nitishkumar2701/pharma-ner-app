@@ -20,8 +20,7 @@ text, carrying over the original `/predict` highlighting feature.
 - **AI note** — `llm_service.py` calls an LLM with the search term (and a
   hint from the reference index, if matched) and asks for a small JSON
   object: what a drug treats / how it works / side effects, or a disease's
-  symptoms / prevention / when to see a doctor. The provider is switchable
-  — see below.
+  symptoms / prevention / when to see a doctor.
 - **Frontend** — `templates/index.html` + `static/` is a single page, no
   build step, calling `/api/search` and `/api/analyze`.
 
